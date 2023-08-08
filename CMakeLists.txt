@@ -124,3 +124,5 @@ install (
 	FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
 	DESTINATION lib/cmake
 )
+
+add_subdirectory (sample)
