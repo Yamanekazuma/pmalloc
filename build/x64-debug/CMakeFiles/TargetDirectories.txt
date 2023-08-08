@@ -1,0 +1,6 @@
+C:/Users/HalKz/source/repos/pmalloc/build/x64-debug/CMakeFiles/pmalloc.dir
+C:/Users/HalKz/source/repos/pmalloc/build/x64-debug/CMakeFiles/edit_cache.dir
+C:/Users/HalKz/source/repos/pmalloc/build/x64-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/HalKz/source/repos/pmalloc/build/x64-debug/CMakeFiles/list_install_components.dir
+C:/Users/HalKz/source/repos/pmalloc/build/x64-debug/CMakeFiles/install.dir
+C:/Users/HalKz/source/repos/pmalloc/build/x64-debug/CMakeFiles/install/local.dir
