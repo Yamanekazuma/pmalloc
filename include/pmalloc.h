@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "pmalloc/type.h"
-
+#include "Windows.h"
 
 #ifdef PMALLOC_EXPORTS
 	#define PMALLOCAPI __declspec(dllexport)
@@ -13,7 +12,12 @@
 #define out
 
 
-PMALLOCAPI void* pmalloc(in size_t size, in memory_protect_t protect);
-PMALLOCAPI void* pcalloc(in size_t size, in memory_protect_t protect);
-PMALLOCAPI void* prealloc(in void* ptr, in memory_protect_t protect, in size_t size);
+PMALLOCAPI void* pmalloc(in size_t size);
+PMALLOCAPI void* pcalloc(in size_t size);
+PMALLOCAPI void* prealloc(in out void* ptr, in size_t size);
+
+PMALLOCAPI void* pmalloc_aligned(in size_t size, in size_t alignemnt);
+PMALLOCAPI void* pcalloc_aligned(in size_t size, in size_t alignemnt);
+PMALLOCAPI void* prealloc_aligned(in out void* ptr, in size_t alignemnt);
+
 PMALLOCAPI void pfree(in void* ptr);
