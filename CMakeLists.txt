@@ -8,9 +8,9 @@ endif()
 FILE(GLOB src "src/*.c")
 FILE(GLOB include "include/*.h")
 
-project ("pmalloc" VERSION 0.1.0 LANGUAGES C)
+project("pmalloc" VERSION 0.1.0 LANGUAGES C)
 
-add_library(
+add_library (
 	${PROJECT_NAME}
 	STATIC
 	${src}
@@ -19,7 +19,7 @@ add_library(
 
 add_library (${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-target_compile_features(${PROJECT_NAME} PUBLIC c_std_17)
+target_compile_features (${PROJECT_NAME} PUBLIC c_std_17)
 target_compile_definitions (
 	${PROJECT_NAME}
 	PRIVATE
@@ -90,8 +90,14 @@ target_link_options (
 
 target_include_directories (
 	${PROJECT_NAME}
+	PRIVATE
+	include
+)
+
+target_include_directories (
+	${PROJECT_NAME}
 	PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/share>
 	$<INSTALL_INTERFACE:include>
 )
 
@@ -99,18 +105,17 @@ install (
 	TARGETS ${PROJECT_NAME}
 	EXPORT ${PROJECT_NAME}-config
 	ARCHIVE DESTINATION lib
-	PUBLIC_HEADER DESTINATION include
+)
+
+install (
+	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/share/
+	DESTINATION include
 )
 
 install (
 	EXPORT ${PROJECT_NAME}-config
 	NAMESPACE ${PROJECT_NAME}::
 	DESTINATION lib/cmake
-)
-
-install (
-	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-	DESTINATION include
 )
 
 include(CMakePackageConfigHelpers)
@@ -124,5 +129,4 @@ install (
 	FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
 	DESTINATION lib/cmake
 )
-
 add_subdirectory (sample)

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Windows.h"
+#include <pmalloc/type.h>
 
 #ifdef PMALLOC_EXPORTS
 	#define PMALLOCAPI __declspec(dllexport)
