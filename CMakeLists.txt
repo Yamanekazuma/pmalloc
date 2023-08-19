@@ -115,7 +115,7 @@ install (
 install (
 	EXPORT ${PROJECT_NAME}-config
 	NAMESPACE ${PROJECT_NAME}::
-	DESTINATION lib/cmake
+	DESTINATION cmake
 )
 
 include(CMakePackageConfigHelpers)
@@ -127,5 +127,5 @@ write_basic_package_version_file (
 
 install (
 	FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-	DESTINATION lib/cmake
+	DESTINATION cmake
 )
