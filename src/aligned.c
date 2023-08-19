@@ -2,7 +2,7 @@
 
 #define NOT_POWER_OF_TWO(n) ((n) & ((n) - 1))
 #define GET_ALIGNMENT_PTR(original_ptr, alignment) (void*)(((uintptr_t)(original_ptr)&~((uintptr_t)((alignment))-1))+sizeof(void*)+alignment)
-// void*‚Ìalignment‚É]‚Á‚½ptr‚Ìˆê‚Âè‘O‚Ì—Ìˆæ‚Éoriginal_ptr‚ğŠi”[‚·‚é
+// void*ã®alignmentã«å¾“ã£ãŸptrã®ä¸€ã¤æ‰‹å‰ã®é ˜åŸŸã«original_ptrã‚’æ ¼ç´ã™ã‚‹
 #define ORIGINAL_PTR(ptr) (*((void**)((uintptr_t)(ptr) & ~(uintptr_t)sizeof(void*))-1))
 
 void* pmalloc_aligned(in size_t size, in size_t alignment) {
@@ -13,13 +13,13 @@ void* pmalloc_aligned(in size_t size, in size_t alignment) {
 		return NULL;
 	}
 
-	// size + alignment’²® + Œ³ƒ|ƒCƒ“ƒ^•Û‘¶—Ìˆæ
+	// size + alignmentèª¿æ•´ + å…ƒãƒã‚¤ãƒ³ã‚¿ä¿å­˜é ˜åŸŸ
 	void* original_ptr = pmalloc(sizeof(void*) + alignment + size);
 	if (original_ptr == NULL) {
 		return NULL;
 	}
 	void* ptr = GET_ALIGNMENT_PTR(original_ptr, alignment);
-	// Œ³ƒ|ƒCƒ“ƒ^‚ğalignmentŒã‚©‚çŒ©‚Ä-4byte–Ú‚É•Û‘¶ifree‚Åg—pj
+	// å…ƒãƒã‚¤ãƒ³ã‚¿ã‚’alignmentå¾Œã‹ã‚‰è¦‹ã¦-4byteç›®ã«ä¿å­˜ï¼ˆfreeã§ä½¿ç”¨ï¼‰
 	ORIGINAL_PTR(ptr) = original_ptr;
 	return ptr;
 }
@@ -64,9 +64,9 @@ void* prealloc_aligned(in out void* ptr, in size_t size, in size_t alignment) {
 	if (ptr != GET_ALIGNMENT_PTR(original_ptr, alignment)) {
 		return NULL;
 	}
-	// alignment‚ÌƒTƒCƒYŸ‘æ‚Åptr‚Æoriginal_ptr‚ÌŠÔ‚ÌƒTƒCƒY‚ª•Ï‚í‚é‚±‚Æ‚ª‚ ‚é
-	// ‚»‚ÌÛ‚Í’Pƒ‚Érealloc‚ÌÄ”z’u‚É”C‚¹‚é‚ÆAoriginal_ptr‚âƒ†[ƒUƒf[ƒ^‚Ì
-	// alignment‚ª•Ï‚í‚Á‚Ä‚µ‚Ü‚¤‚½‚ßAC³‚·‚é•K—v‚ª‚ ‚é
+	// alignmentã®ã‚µã‚¤ã‚ºæ¬¡ç¬¬ã§ptrã¨original_ptrã®é–“ã®ã‚µã‚¤ã‚ºãŒå¤‰ã‚ã‚‹ã“ã¨ãŒã‚ã‚‹
+	// ãã®éš›ã¯å˜ç´”ã«reallocã®å†é…ç½®ã«ä»»ã›ã‚‹ã¨ã€original_ptrã‚„ãƒ¦ãƒ¼ã‚¶ãƒ‡ãƒ¼ã‚¿ã®
+	// alignmentãŒå¤‰ã‚ã£ã¦ã—ã¾ã†ãŸã‚ã€ä¿®æ­£ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 	ptrdiff_t shift = (char*)ptr - (char*)original_ptr;
 
 	void* new_original_ptr = prealloc(original_ptr, sizeof(void*) + alignment + size);
@@ -75,7 +75,7 @@ void* prealloc_aligned(in out void* ptr, in size_t size, in size_t alignment) {
 	}
 	void* new_ptr = GET_ALIGNMENT_PTR(new_original_ptr, alignment);
 
-	// alignment‚ÌC³
+	// alignmentã®ä¿®æ­£
 	if (shift != (char*)new_ptr - (char*)new_original_ptr) {
 		memmove(new_ptr, (char*)new_original_ptr + shift, size);
 	}
@@ -83,6 +83,6 @@ void* prealloc_aligned(in out void* ptr, in size_t size, in size_t alignment) {
 	return new_ptr;
 }
 
-#undef ORIGINAL_PTR(p)
-#undef GET_ALIGNMENT_PTR(p)
-#undef NOT_POWER_OF_TWO(n)
+#undef ORIGINAL_PTR
+#undef GET_ALIGNMENT_PTR
+#undef NOT_POWER_OF_TWO
