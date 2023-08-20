@@ -18,3 +18,5 @@ find_package(pmalloc)
 target_link_libraries(${PROJECT_NAME} PRIVATE pmalloc::pmalloc)
 
 target_compile_features(${PROJECT_NAME} PRIVATE c_std_17)
+
+target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:CONSOLE)
