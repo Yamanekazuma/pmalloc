@@ -1,0 +1,75 @@
+name: Build
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  refactor-and-analyze:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}
+        fetch-depth: 0
+
+    - name: Extract changed files
+      id: changed
+      run: |
+        git fetch origin ${{ github.base_ref }} --depth=1
+        echo "FILES_CHANGED=`                                                               \
+          (git diff --name-only --diff-filter=AM ${{ github.base_ref }} HEAD 2> /dev/null)  \
+          | grep -E "^.*\.(c|h|cpp|hpp)"                                                    \
+          | sed -z "s/\n/ /g"                                                               \
+        `" >> $GITHUB_OUTPUT
+
+    - uses: actions/setup-python@v4
+      if: ${{ steps.changed.outputs.FILES_CHANGED != null }}
+      with:
+        python-version: '3.11'
+
+    - name: Install tools
+      if: ${{ steps.changed.outputs.FILES_CHANGED != null }}
+      run: |
+        sudo apt install clang-format
+        pip install lizard
+
+    - name: Refactor
+      if: ${{ steps.changed.outputs.FILES_CHANGED != null }}
+      run: |
+        clang-format -i -style=file:.clang-format ${{ steps.changes.outputs.FILES_CHANGED }}
+        git config --global user.email "action@github.com"
+        git config --global user.name "action"
+        git add .
+        (git commit -m "Refactor by Github Actions" && git push origin HEAD) || expr 1 > /dev/null
+
+    - name: Analyze
+      if: ${{ steps.changed.outputs.FILES_CHANGED != null }}
+      run: |
+        echo "::add-matcher::.github/lizard.json"
+        lizard -l -cpp -w ${{ steps.changed.outputs.FILES_CHANGED != null }}
+  
+  build:
+    needs: refactor-and-analyze
+    strategy:
+      matrix:
+        arch: [x86, x64]
+        variants: [debug, release]
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: ilammy/msvc-dev-cmd@v1.12.1
+      with:
+        arch: ${{ matrix.arch }}
+
+    - name: Build
+      run: |
+        cmake --preset ${{ matrix.arch }}-${{ matrix.variants }}
+        cmake --build out/build/${{ matrix.arch }}-${{ matrix.variants }}
+        cmake --install out/build/${{ matrix.arch }}-${{ matrix.variants }}
