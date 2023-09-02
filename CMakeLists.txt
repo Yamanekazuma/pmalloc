@@ -1,5 +1,9 @@
 ﻿cmake_minimum_required (VERSION 3.12)
 
+set(VERSION_MAJOR 0)
+set(VERSION_MINOR 1)
+set(VERSION_PATCH 0)
+
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
@@ -8,7 +12,7 @@ endif()
 FILE(GLOB src "src/*.c")
 FILE(GLOB include "include/*.h")
 
-project("pmalloc" VERSION 0.1.0 LANGUAGES C)
+project("pmalloc" VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH} LANGUAGES C)
 
 add_library (
 	${PROJECT_NAME}
