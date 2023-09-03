@@ -14,7 +14,7 @@ add_executable (
 	"sample.h"
 )
 
-find_package(pmalloc)
+add_subdirectory(deps/pmalloc EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PRIVATE pmalloc::pmalloc)
 
 target_compile_features(${PROJECT_NAME} PRIVATE c_std_17)
