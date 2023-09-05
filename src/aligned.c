@@ -1,4 +1,5 @@
 #include "pmalloc.h"
+#include <string.h>
 
 #define NOT_POWER_OF_TWO(n) ((n) & ((n) - 1))
 #define GET_ALIGNMENT_PTR(original_ptr, alignment) (void*)(((uintptr_t)(original_ptr)&~((uintptr_t)((alignment))-1))+sizeof(void*)+alignment)
@@ -69,7 +70,8 @@ void* prealloc_aligned(in out void* ptr, in size_t size, in size_t alignment) {
 	// alignmentが変わってしまうため、修正する必要がある
 	ptrdiff_t shift = (char*)ptr - (char*)original_ptr;
 
-	void* new_original_ptr = prealloc(original_ptr, sizeof(void*) + alignment + size);
+	size_t new_size = sizeof(void*) + alignment + size;
+	void* new_original_ptr = prealloc(original_ptr, new_size);
 	if (new_original_ptr == NULL) {
 		return NULL;
 	}

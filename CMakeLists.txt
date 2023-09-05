@@ -24,10 +24,11 @@ add_library (
 add_library (${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_compile_features (${PROJECT_NAME} PUBLIC c_std_17)
+
+
 target_compile_definitions (
 	${PROJECT_NAME}
 	PRIVATE
-	PMALLOC_EXPORTS
 	WIN32
 	_WINDOWS
 	UNICODE
@@ -36,61 +37,49 @@ target_compile_definitions (
 		_DEBUG
 		DEBUG
 	>
-	$<$<CONFIG:Release>:
-		_NDEBUG
-		NDEBUG
-	>
 )
 
-target_compile_options (
-	${PROJECT_NAME}
-	PRIVATE
-	/W4
-	/arch:AVX
-	/EHsc
-	/fp:fast
-	/GS
-	/GT
-	/MP
-	/nologo
-	/Oi
-	/Qpar
-	/utf-8
-	$<$<CONFIG:Debug>:
-		/GR
-		/JMC
-		/MDd
-		/Ob0
-		/Od
-		/RTC1
-		/ZI
-	>
-	$<$<CONFIG:Release>:
+if (MSVC)
+	target_compile_options (
+		${PROJECT_NAME}
+		PRIVATE
+		/arch:AVX
+		/EHa-
+		/EHs-
 		/GA
-		/GL
-		/GR-
-		/Gy
-		/guard:cf-
-		/MD
-		/O2
-		/Oi
-		/Os
-	>
-)
-
-target_link_options (
-	${PROJECT_NAME}
-	PRIVATE
-	/LTCG
-	/nologo
-	$<$<CONFIG:Debug>:
-		/debug
-		/opt:noref
-	>
-	$<$<CONFIG:Release>:
-		/opt:ref
-	>
-)
+		/GF
+		/nologo
+		/TC
+		/utf-8
+		/wd5105
+		$<$<CONFIG:Debug>:
+			/GR
+			/JMC
+			/RTC1
+		>
+		$<$<CONFIG:Release>:
+			/GL
+			/GR-
+			/Gw
+			/Gy
+			/Oi
+		>
+	)
+else()
+	target_compile_options (
+		${PROJECT_NAME}
+		PRIVATE
+		-mavx
+		-mfpmath=sse
+		$<$<CONFIG:Debug>:
+			-Og
+		>
+		$<$<CONFIG:Release>:
+			-fomit-frame-pointer
+			-ftree-vectorize
+		>
+	)
+endif()
 
 target_include_directories (
 	${PROJECT_NAME}
