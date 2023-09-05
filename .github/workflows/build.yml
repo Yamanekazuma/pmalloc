@@ -7,6 +7,9 @@ on:
 permissions:
   contents: write
 
+env:
+    SAMPLE_EXE_NAME: pm-sample.exe
+
 jobs:
   refactor-and-analyze:
     runs-on: ubuntu-latest
@@ -52,7 +55,8 @@ jobs:
         echo "::add-matcher::.github/lizard.json"
         lizard -l -cpp -w ${{ steps.changed.outputs.FILES_CHANGED != null }}
   
-  build:
+
+  build-windows:
     needs: refactor-and-analyze
     strategy:
       matrix:
@@ -64,12 +68,52 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: ilammy/msvc-dev-cmd@v1.12.1
+    - name: Setup
+      uses: ilammy/msvc-dev-cmd@v1.12.1
       with:
         arch: ${{ matrix.arch }}
 
-    - name: Build
+    - name: Build library
       run: |
-        cmake --preset ${{ matrix.arch }}-${{ matrix.variants }}
-        cmake --build out/build/${{ matrix.arch }}-${{ matrix.variants }}
-        cmake --install out/build/${{ matrix.arch }}-${{ matrix.variants }}
+        cmake --preset ${{ matrix.arch }}-${{ matrix.variants }}-win
+        cmake --build out/build/${{ matrix.arch }}-${{ matrix.variants }}-win
+        cmake --install out/build/${{ matrix.arch }}-${{ matrix.variants }}-win
+
+    - name: Build sample
+      working-directory: sample
+      run: |
+        build.bat ${{ matrix.arch }} ${{ matrix.variants }}
+        dir .\build\${{ matrix.arch }}-${{ matrix.variants }}-win\${{ env.SAMPLE_EXE_NAME }} > NUL 2>&1
+
+
+  build-linux:
+    needs: refactor-and-analyze
+    strategy:
+      matrix:
+        arch: [x86, x64]
+        variants: [debug, release]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup for x86
+      if: ${{ matrix.arch == "x86" }}
+      run: sudo apt install gcc-mingw-w64-i686-win32
+    
+    - name: Setup for x64
+      if: ${{ matrix.arch == "x64" }}
+      run: sudo apt install gcc-mingw-w64-x86-64-win32
+
+    - name: Build library
+      run: |
+        cmake --preset ${{ matrix.arch }}-${{ matrix.variants }}-linux
+        cmake --build out/build/${{ matrix.arch }}-${{ matrix.variants }}-linux
+        cmake --install out/build/${{ matrix.arch }}-${{ matrix.variants }}-linux
+
+    - name: Build sample
+      working-directory: sample
+      run: |
+        ./build.sh ${{ matrix.arch }} ${{ matrix.variants }}
+        find ./build/${{ matrix.arch }}-${{ matrix.variants }}-linux/${{ env.SAMPLE_EXE_NAME }} &> /dev/null
