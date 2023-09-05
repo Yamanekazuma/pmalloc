@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 out/
 sample/build/
+sample/deps/pmalloc
