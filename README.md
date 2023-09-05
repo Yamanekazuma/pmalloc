@@ -1,4 +1,6 @@
 # pmalloc
+[![Build](https://github.com/Yamanekazuma/pmalloc/actions/workflows/build.yml/badge.svg)](https://github.com/Yamanekazuma/pmalloc/actions/workflows/build.yml)
+
 pmalloc is a executable-memory allocator for Windows.
 
 ## How to use
