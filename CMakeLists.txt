@@ -1,8 +1,8 @@
 ﻿cmake_minimum_required (VERSION 3.12)
 
 set(VERSION_MAJOR 0)
-set(VERSION_MINOR 1)
-set(VERSION_PATCH 1)
+set(VERSION_MINOR 2)
+set(VERSION_PATCH 0)
 
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
