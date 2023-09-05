@@ -100,11 +100,11 @@ jobs:
 
     - name: Setup for x86
       if: ${{ matrix.arch == 'x86' }}
-      run: sudo apt install gcc-mingw-w64-i686-win32
+      run: sudo apt install gcc-mingw-w64-i686-win32 ninja-build
     
     - name: Setup for x64
       if: ${{ matrix.arch == 'x64' }}
-      run: sudo apt install gcc-mingw-w64-x86-64-win32
+      run: sudo apt install gcc-mingw-w64-x86-64-win32 ninja-build
 
     - name: Build library
       run: |
