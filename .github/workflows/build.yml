@@ -37,7 +37,8 @@ jobs:
     - name: Install tools
       if: ${{ steps.changed.outputs.FILES_CHANGED != null }}
       run: |
-        sudo apt install clang-format
+        sudo apt-get update
+        sudo apt-get install clang-format
         pip install lizard
 
     - name: Refactor
@@ -97,14 +98,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: Setup for x86
-      if: ${{ matrix.arch == 'x86' }}
-      run: sudo apt install gcc-mingw-w64-i686-win32 ninja-build
-    
-    - name: Setup for x64
-      if: ${{ matrix.arch == 'x64' }}
-      run: sudo apt install gcc-mingw-w64-x86-64-win32 ninja-build
+  
+    - name: Setup
+      run: |
+        sudo apt-get update
+        sudo apt-get install ninja-build
+        if [ "${{ matrix.arch }}" == "x86" ]; then
+          sudo apt-get install gcc-mingw-w64-i686-win32
+        elif [ "${{ matrix.arch }}" == "x64" ]; then
+          sudo apt-get install gcc-mingw-w64-x86-64-win32
+        fi
 
     - name: Build library
       run: |
