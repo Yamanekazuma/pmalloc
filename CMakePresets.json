@@ -2,11 +2,16 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "windows-base",
+      "name": "common-base",
       "hidden": true,
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "installDir": "${sourceDir}/out/install/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}"
+    },
+    {
+      "name": "windows-base",
+      "hidden": true,
+      "inherits": "common-base",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl.exe",
         "CMAKE_CXX_COMPILER": "cl.exe"
@@ -20,9 +25,7 @@
     {
       "name": "linux-base",
       "hidden": true,
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
-      "installDir": "${sourceDir}/install/${presetName}",
+      "inherits": "common-base",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
