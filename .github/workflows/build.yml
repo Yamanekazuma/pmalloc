@@ -82,8 +82,8 @@ jobs:
     - name: Build sample
       working-directory: sample
       run: |
-        build.bat ${{ matrix.arch }} ${{ matrix.variants }}
-        dir .\build\${{ matrix.arch }}-${{ matrix.variants }}-win\${{ env.SAMPLE_EXE_NAME }} > NUL 2>&1
+        .\build.bat ${{ matrix.arch }} ${{ matrix.variants }}
+        dir .\build\${{ matrix.arch }}-${{ matrix.variants }}-win\${{ env.SAMPLE_EXE_NAME }} > $null 2>&1
 
 
   build-linux:
